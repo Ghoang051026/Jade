@@ -1,6 +1,3 @@
-//! Jade Lite cho Horizon: panel thông tin của block đang nhìn.
-//! `/jade` bật hoặc tắt panel.
-
 mod api;
 
 use horizon_mod_sdk::{
@@ -8,12 +5,11 @@ use horizon_mod_sdk::{
     hud::{self, Corner, Line},
 };
 
-const REACH: f64 = 20.0;
+const REACH: f32 = 20.0;
 
 const WHITE: u32 = 0xFFFFFF;
 const GRAY: u32 = 0xAAAAAA;
 const BLUE: u32 = 0x5555FF;
-const GREEN: u32 = 0x55FF55;
 
 struct JadeLite {
     shown: bool,
@@ -39,7 +35,7 @@ fn title(s: &str) -> String {
         .join(" ")
 }
 
-fn distance(px: f64, py: f64, pz: f64, t: api::Target) -> f64 {
+fn distance(px: f64, py: f64, pz: f64, t: &api::Target) -> f64 {
     let dx = t.x as f64 + 0.5 - px;
     let dy = t.y as f64 + 0.5 - (py + 1.62);
     let dz = t.z as f64 + 0.5 - pz;
@@ -49,30 +45,17 @@ fn distance(px: f64, py: f64, pz: f64, t: api::Target) -> f64 {
 fn build_lines() -> Option<Vec<(String, u32)>> {
     let p = game::get_player()?;
     let t = api::target(REACH)?;
-    let id = api::block_id(t)?;
-    if id == "minecraft:air" || id == "minecraft:cave_air" || id == "minecraft:void_air" {
+    if t.id == "minecraft:air" || t.id == "minecraft:cave_air" || t.id == "minecraft:void_air" {
         return None;
     }
-    let (name, ns) = pretty(&id);
-    let mut lines = vec![
+    let (name, ns) = pretty(&t.id);
+    let d = distance(p.x, p.y, p.z, &t);
+    Some(vec![
         (name, WHITE),
-        (id.clone(), GRAY),
+        (t.id.clone(), GRAY),
         (ns, BLUE),
-        (
-            format!(
-                "{} {} {}  ({:.1} m)",
-                t.x,
-                t.y,
-                t.z,
-                distance(p.x, p.y, p.z, t)
-            ),
-            GRAY,
-        ),
-    ];
-    if let Some(b) = api::biome(t) {
-        lines.push((format!("Biome: {}", pretty(&b).0), GREEN));
-    }
-    Some(lines)
+        (format!("{} {} {}  ({:.1} m)", t.x, t.y, t.z, d), GRAY),
+    ])
 }
 
 impl Mod for JadeLite {
@@ -116,7 +99,7 @@ impl Mod for JadeLite {
         self.shown = !self.shown;
         Ok(Some(format!(
             "Jade Lite {}",
-            if self.shown { "bật" } else { "tắt" }
+            if self.shown { "bat" } else { "tat" }
         )))
     }
 }
