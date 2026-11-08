@@ -1,4 +1,4 @@
-use horizon_mod_sdk::world;
+use horizon_mod_sdk::game;
 
 #[derive(Clone, PartialEq, Eq)]
 pub struct Target {
@@ -9,7 +9,7 @@ pub struct Target {
 }
 
 pub fn target(distance: f32) -> Option<Target> {
-    let hit = world::raycast(distance)?;
+    let hit = game::raycast(distance)?;
     Some(Target {
         x: hit.block_x,
         y: hit.block_y,
