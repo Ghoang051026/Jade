@@ -10,6 +10,12 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
+      - name: In WIT cua SDK
+        run: |
+          git clone --depth 1 -b mod-api-input-ui-render-world https://github.com/Stink-O/horizon /tmp/hz
+          echo "=====WIT====="
+          cat /tmp/hz/crates/horizon-mod-sdk/wit/horizon.wit
+          echo "=====END WIT====="
       - run: cargo install --git https://github.com/Stink-O/horizon --branch mod-api-input-ui-render-world cargo-horizon-mod
       - name: Dung du an
         run: |
