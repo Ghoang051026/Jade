@@ -10,14 +10,30 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
-      - run: cargo install --git https://github.com/ludovic111/horizon cargo-horizon-mod
-      - run: |
-          cd "$RUNNER_TEMP"
-          cargo horizon-mod new jade_lite
-          cp "$GITHUB_WORKSPACE/src/lib.rs" jade_lite/src/lib.rs
-          cp "$GITHUB_WORKSPACE/src/api.rs" jade_lite/src/api.rs
-          cp "$GITHUB_WORKSPACE/horizon-mod.toml" jade_lite/horizon-mod.toml
-          cd jade_lite
+      - run: cargo install --git https://github.com/Stink-O/horizon --branch mod-api-input-ui-render-world cargo-horizon-mod
+      - name: Dung du an
+        run: |
+          mkdir -p "$RUNNER_TEMP/jade_lite/src"
+          cd "$RUNNER_TEMP/jade_lite"
+          cp "$GITHUB_WORKSPACE/src/lib.rs" src/lib.rs
+          cp "$GITHUB_WORKSPACE/src/api.rs" src/api.rs
+          cp "$GITHUB_WORKSPACE/horizon-mod.toml" horizon-mod.toml
+          cat > Cargo.toml <<'TOML'
+          [package]
+          name = "jade_lite"
+          version = "0.1.0"
+          edition = "2021"
+
+          [lib]
+          crate-type = ["cdylib"]
+
+          [dependencies]
+          horizon-mod-sdk = { git = "https://github.com/Stink-O/horizon", branch = "mod-api-input-ui-render-world" }
+
+          [profile.release]
+          opt-level = "s"
+          lto = true
+          TOML
           cargo horizon-mod build
           mkdir -p "$GITHUB_WORKSPACE/out"
           cp target/horizon-mod/jade_lite.hmod "$GITHUB_WORKSPACE/out/"
