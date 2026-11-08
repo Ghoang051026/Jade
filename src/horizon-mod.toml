@@ -1,8 +1,0 @@
-id = "jade_lite"
-name = "Jade Lite"
-version = "0.1.0"
-description = "Hiện tên block, ID, mod nguồn, toạ độ, khoảng cách và biome của block đang nhìn."
-authors = []
-api = "0.1"
-side = "client"
-capabilities = ["game-read", "world", "hud"]
