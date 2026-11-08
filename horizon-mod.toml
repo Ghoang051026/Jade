@@ -1,8 +1,8 @@
 id = "jade_lite"
 name = "Jade Lite"
 version = "0.1.0"
-description = "Hien ten block, ID, mod nguon, toa do, khoang cach va biome cua block dang nhin."
+description = "Hien ten block, ID, mod nguon, toa do va khoang cach cua block dang nhin."
 authors = []
 api = "0.1"
 side = "client"
-capabilities = ["game-read", "world", "hud"]
+capabilities = ["game-read", "hud"]
